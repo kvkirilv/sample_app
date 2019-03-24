@@ -1,4 +1,5 @@
 require 'test_helper'
+
 require "minitest/reporters"
 Minitest::Reporters.use!
 
@@ -24,7 +25,7 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   	assert_select "title", "About | #{@base_title}"
   end
 
-  test "static_pages_contant_url" do
+  test "static_pages_contant_url"  do
   	get static_pages_contact_url
   	assert_response :success
   	assert_select "title", "Contact | #{@base_title}" 
