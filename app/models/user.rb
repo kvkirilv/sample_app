@@ -31,11 +31,11 @@ class User < ApplicationRecord
   end
 
     # Возвращает true, если предоставленный токен совпадает с дайджестом.
-  def authenticated?(remember_token)
-    return false if remember_digest.nil?
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
+    BCrypt::Password.new(digest).is_password?(token)
   end
-
    # Забывает пользователя
   def forget
     update_attribute(:remember_digest, nil)
@@ -51,5 +51,17 @@ class User < ApplicationRecord
       self.activation_token  = User.new_token
       self.activation_digest = User.digest(activation_token)
     end
+
+
+      # Активирует аккаунт.
+  def activate
+    update_attribute(:activated,    true)
+    update_attribute(:activated_at, Time.zone.now)
+  end
+
+  # Отправляет электронное письмо для активации.
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
+  end
 
 end
